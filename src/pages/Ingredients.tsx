@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import FOOD_DATABASE_IMP from '../assets/ingredients.json';
+import FOOD_DATABASE_IMP from '../assets/data/ingredients.json';
 import { theme } from '../assets/themes';
 
 interface Ingredient {
@@ -30,14 +30,24 @@ const IngredientsPage: React.FC = () => {
   const FOOD_DATABASE: FoodDatabase = FOOD_DATABASE_IMP as FoodDatabase;
 
   return (
-    <div style={styles.container}>
+    <div style={styles.container} id="top"
+    >
       <header style={styles.header}>
         <h1 style={styles.title}>Ingredient Library</h1>
-        <p style={styles.subtitle}>Nutritional powerhouses for longevity</p>
+        <h2 style={{ marginTop: "1.2rem" }}>Categories</h2>
+        <ol>
+          {Object.entries(FOOD_DATABASE).map(([category]) => (
+            <li key={category} style={{ ...styles.categoryTitle, textAlign: "left", cursor: "pointer", color: theme.colors.textPrimary }}
+              onClick={() => {
+                document.getElementById(category)?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >{category}</li>
+          ))}
+        </ol>
       </header>
 
       {Object.entries(FOOD_DATABASE).map(([category, items]) => (
-        <section key={category} style={styles.section}>
+        <section key={category} style={styles.section} id={category}>
           <h2 style={styles.categoryTitle}>{category}</h2>
           <div style={styles.grid}>
             {items.map((item) => (
@@ -83,7 +93,7 @@ const IngredientsPage: React.FC = () => {
             </div>
             {
               selectedItem.ingredients &&
-              <ul style={{textAlign:"left"}}>
+              <ul style={{ textAlign: "left" }}>
                 <h3 style={styles.modalSubtitle}>Ingredients</h3>
                 {selectedItem.ingredients.split(/\n/).map((line, idx) => (
                   <li key={idx} style={{ marginBottom: '8px' }}>{line}</li>
@@ -96,10 +106,21 @@ const IngredientsPage: React.FC = () => {
               <div>
                 <p style={styles.fullInfo}>{selectedItem.howTo}</p>
               </div>
-            }            
+            }
           </div>
         </div>
       )}
+      <div id="scrollToTopButton" style={{
+        position: "fixed", bottom: "0.8rem", right: ".8rem",
+        padding: ".8rem 1rem",
+        fontSize: "2rem",
+        borderRadius: "100%",
+        backgroundColor: theme.colors.accentLight,
+        color: theme.colors.textPrimary,
+        fontWeight: 900
+      }} onClick={() => document.getElementById("top")?.scrollIntoView({ behavior: 'smooth' })}>
+        ↑
+      </div>
     </div>
   );
 };
@@ -117,7 +138,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     maxWidth: '1200px',
     margin: '0 auto',
     color: theme.colors.textPrimary,
-    fontFamily: theme.typography.fontFamily
+    fontFamily: theme.typography.fontFamily,
+    position: 'relative'
   },
   header: { textAlign: 'center', marginBottom: '40px' },
   title: {
@@ -139,8 +161,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-    gap: '20px'
+    gridTemplateColumns: 'repeat(auto-fill, minmax(145px, 1fr))',
+    gap: '8px'
   },
   card: {
     background: theme.colors.cardBg,
@@ -152,7 +174,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     boxShadow: theme.shadows.card
   },
   imagePlaceholder: {
-    height: '160px',
+    height: '120px',
     background: 'rgba(255,255,255,0.05)',
     display: 'flex',
     alignItems: 'center',
@@ -162,9 +184,12 @@ const styles: { [key: string]: React.CSSProperties } = {
   img: { width: '100%', height: '100%', objectFit: 'cover' },
   cardContent: { padding: '16px' },
   itemName: {
-    margin: '0 0 8px 0',
-    fontSize: theme.typography.h2.fontSize,
-    fontWeight: theme.typography.h2.fontWeight
+    margin: '0 0 4px 0',
+    fontSize: '0.85rem', // Sänkt fontstorlek för att undvika fula radbrytningar
+    fontWeight: theme.typography.h2.fontWeight,
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis' // Lägger till ... om namnet är för långt
   },
   itemInfo: {
     color: theme.colors.textSecondary,

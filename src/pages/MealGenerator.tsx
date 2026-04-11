@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import FOOD_DATABASE_IMP from '../assets/ingredients.json';
+import FOOD_DATABASE_IMP from '../assets/data/ingredients.json';
 import { theme } from '../assets/themes';
 // --- Types ---
 interface Ingredient {
@@ -70,15 +70,37 @@ const MealRandomizer: React.FC = () => {
         return;
     }
 
-    const newMeals = Array.from({ length: 3 }, () => {
-      return Object.keys(FOOD_DATABASE).map(category => {
-        const list = FOOD_DATABASE[category];
-        const randomItem = list[Math.floor(Math.random() * list.length)];
+    const globalCounts: Record<string, number> = {};
+    const newMeals: SelectedItem[][] = [];
+
+    for (let i = 0; i < 3; i++) {
+      const meal = Object.keys(FOOD_DATABASE).map(category => {
+        let list = FOOD_DATABASE[category];
+
+        // Regel 1: Protein för Box #1 (index 0) måste vara p2 eller p7
+        if (i === 0 && category === "Core Protein") {
+          list = list.filter(item => item.id === 'p2' || item.id === 'p7');
+        }
+
+        // Regel 2: Filtrera bort ingredienser som redan valts 2 gånger totalt
+        const availableItems = list.filter(item => (globalCounts[item.id] || 0) < 2);
+
+        // Fallback: Om alla alternativ i en kategori är "fulla", ta den som använts minst 
+        // (för att förhindra att appen kraschar om databasen är liten)
+        const candidates = availableItems.length > 0 ? availableItems : list;
+
+        const randomItem = candidates[Math.floor(Math.random() * candidates.length)];
+
+        // Uppdatera räknaren för denna ingrediens
+        globalCounts[randomItem.id] = (globalCounts[randomItem.id] || 0) + 1;
+
         return { ...randomItem, category };
       });
-    });
+
+      newMeals.push(meal);
+    }
+
     setMeals(newMeals);
-    localStorage.setItem('longevity-weeklyMeals', JSON.stringify(meals));
   };
 
   const shoppingList = useMemo(() => {

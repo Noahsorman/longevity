@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import FOOD_DATABASE_IMP from '../assets/data/ingredients.json';
+import FOOD_DATABASE_IMP from '../assets/data/snacks.json';
 import { theme } from '../assets/themes';
 
 interface Ingredient {
@@ -7,7 +7,6 @@ interface Ingredient {
   name: string;
   image: string;
   portion?: string | number; // Added portion
-  pantry?: boolean; // Indicates if the ingredient is in the pantry
   stats?: {
     kcal: number;
     protein: number;
@@ -15,27 +14,24 @@ interface Ingredient {
     fat: number;
     carbs: number;
   }
-  rdi?: Record<string, number | undefined>;
   info?: string;
-  ingredients?: string;
-  howTo?: string;
 }
 
 type FoodDatabase = Ingredient[];
 
-const DressingsPage: React.FC = () => {
+const SnacksPage: React.FC = () => {
   const [selectedItem, setSelectedItem] = useState<Ingredient | null>(null);
-  const DRESSINGS: FoodDatabase = FOOD_DATABASE_IMP.Dressings as FoodDatabase;
+  const SNACKS: FoodDatabase = FOOD_DATABASE_IMP as FoodDatabase;
 
   return (
     <div style={styles.container}>
       <header style={styles.header}>
-        <h1 style={styles.title}>Dressing</h1>
+        <h1 style={styles.title}>Snacks</h1>
       </header>
 
       <section style={styles.section}>
         <div style={styles.grid}>
-          {DRESSINGS.map((item) => (
+          {SNACKS.map((item) => (
             <div
               key={item.id}
               style={styles.card}
@@ -69,41 +65,6 @@ const DressingsPage: React.FC = () => {
               <Stat label="Fat" val={selectedItem.stats.fat} unit="g" />
             </div>
           )}
-
-          <div style={styles.scrollArea}>
-            <h3 style={styles.modalSubtitle}>Ingredienser</h3>
-            <ul style={styles.ingredientList}>
-              {selectedItem.ingredients?.split('\n').map((line, idx) => {
-                if(line.indexOf("#") == 0)
-                  return <h4 key={idx} style={{marginTop: "1.5rem", color: theme.colors.accentLight}}>{line.replace("#", "")}</h4>
-                return <li key={idx} style={styles.listItem}>{line}</li>
-              })}
-            </ul>
-
-            {selectedItem.howTo &&
-            <>
-            <h3 style={styles.modalSubtitle}>Instruktioner</h3>
-            <ol style={styles.ingredientList}>
-              {selectedItem.howTo.split('\n').map((line, idx) => (
-                <li key={idx} style={styles.listItem}>{line}</li>
-              ))}
-            </ol>
-            </>
-            }
-            
-            {selectedItem.rdi && (
-              <div style={styles.rdiSection}>
-                  <h3 style={styles.modalSubtitle}>Highlights (% av RDI)</h3>
-                  <div style={styles.rdiGrid}>
-                    {Object.entries(selectedItem.rdi).map(([key, val]) => (
-                      <div key={key} style={styles.rdiItem}>
-                        <strong>{key}:</strong> {val}%
-                      </div>
-                    ))}
-                  </div>
-              </div>
-            )}
-          </div>
         </div>
       </div>
     )}
@@ -250,4 +211,4 @@ const styles: { [key: string]: React.CSSProperties } = {
   }
 };
 
-export default DressingsPage;
+export default SnacksPage;

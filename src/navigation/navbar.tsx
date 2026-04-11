@@ -48,6 +48,10 @@ const Navbar: React.FC<NavbarProps> = ({ items }) => {
           background: #0f172a; z-index: 2000; padding: 2rem;
           transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
           border-left: 1px solid rgba(255, 255, 255, 0.1);
+
+          .nav-link{
+            font-size: 1.5rem
+          }
         }
         .drawer.open { transform: translateX(0); }
         .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 1999; }
@@ -86,15 +90,15 @@ const Navbar: React.FC<NavbarProps> = ({ items }) => {
 
       {/* Mobile Menu */}
       <div className={`drawer ${isOpen ? 'open' : ''}`}>
-        <button onClick={() => setIsOpen(false)} style={{background: 'none', border: 'none', color: '#64748b', marginBottom: '2rem', cursor: 'pointer'}}>✕ Close</button>
+        <button onClick={() => setIsOpen(false)} style={{background: 'none', border: 'none', color: '#64748b', marginBottom: '2rem', cursor: 'pointer', fontSize: "1.5rem"}}>✕ Close</button>
         <div style={{display: 'flex', flexDirection: 'column', gap: '1.5rem'}}>
           {Object.entries(items).map(([title, value]) => (
             <div key={title}>
               {typeof value === 'string' ? (
-                <Link to={value} onClick={() => setIsOpen(false)} className="nav-link" style={{fontSize: '1.2rem'}}>{title}</Link>
+                <Link to={value} onClick={() => setIsOpen(false)} className="nav-link" style={{fontSize: '2rem'}}>{title}</Link>
               ) : (
                 <div>
-                  <div style={{color: '#3b82f6', fontSize: '0.75rem', fontWeight: 700, marginBottom: '0.75rem', textTransform: 'uppercase'}}>{title}</div>
+                  <div style={{color: '#3b82f6', fontSize: '1.6rem', fontWeight: 700, marginBottom: '1.5rem', textTransform: 'uppercase'}}>{title}</div>
                   <div style={{display: 'flex', flexDirection: 'column', gap: '1rem', paddingLeft: '1rem', borderLeft: '1px solid #334155'}}>
                     {Object.entries(value).map(([label, href]) => (
                       <Link key={href} to={href} onClick={() => setIsOpen(false)} className="nav-link">{label}</Link>
