@@ -37,7 +37,8 @@ const BreakfastPage: React.FC = () => {
             ([2,4]).includes(index) ? 0 : 
             ([0]).includes(index) ? 1 : 
             ([1,3]).includes(index) ? 2 : 
-            3
+            ([5]).includes(index) ? 3 : 
+            4
           ];
           
           return (
