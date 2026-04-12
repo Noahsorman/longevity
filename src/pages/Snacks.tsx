@@ -12,62 +12,103 @@ interface Ingredient {
     protein: number;
     fiber: number;
     fat: number;
-    carbs: number;
+    carbs?: number;
+  }
+  rdi?: {
+    rdi?: Record<string, number | undefined>;
   }
   info?: string;
+  ingredients?: string;
+  howTo?: string;
 }
 
-type FoodDatabase = Ingredient[];
+type FoodDatabase = Record<string, Ingredient[]>;
 
 const SnacksPage: React.FC = () => {
   const [selectedItem, setSelectedItem] = useState<Ingredient | null>(null);
-  const SNACKS: FoodDatabase = FOOD_DATABASE_IMP as FoodDatabase;
+  const FOOD_DATABASE: FoodDatabase = FOOD_DATABASE_IMP as FoodDatabase;
 
   return (
-    <div style={styles.container}>
+    <div style={styles.container} id="top"
+    >
       <header style={styles.header}>
-        <h1 style={styles.title}>Snacks</h1>
+        <h1 style={styles.title}>Snacks Library</h1>
+        <h2 style={{ marginTop: "1.2rem" }}>Categories</h2>
+        <ol>
+          {Object.entries(FOOD_DATABASE).map(([category]) => (
+            <li key={category} style={{ ...styles.categoryTitle, textAlign: "left", cursor: "pointer", color: theme.colors.textPrimary }}
+              onClick={() => {
+                document.getElementById(category)?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >{category}</li>
+          ))}
+        </ol>
       </header>
 
-      <section style={styles.section}>
-        <div style={styles.grid}>
-          {SNACKS.map((item) => (
-            <div
-              key={item.id}
-              style={styles.card}
-              onClick={() => setSelectedItem(item)}
-            >
-              <div style={styles.imagePlaceholder}>
-                {item.image ? <img src={item.image} alt={item.name} style={styles.img} /> : <span>🥗</span>}
+      {Object.entries(FOOD_DATABASE).map(([category, items]) => (
+        <section key={category} style={styles.section} id={category}>
+          <h2 style={styles.categoryTitle}>{category}</h2>
+          <div style={styles.grid}>
+            {items.map((item) => (
+              <div
+                key={item.id}
+                style={styles.card}
+                onClick={() => setSelectedItem(item)}
+              >
+                <div style={styles.imagePlaceholder}>
+                  {item.image ? <img src={item.image} alt={item.name} style={styles.img} /> : <span>🥗</span>}
+                </div>
+                <div style={styles.cardContent}>
+                  <h3 style={styles.itemName}>{item.name}</h3>
+                  <p style={styles.itemInfo}>{item.info}</p>
+                </div>
               </div>
-              <div style={styles.cardContent}>
-                <h3 style={styles.itemName}>{item.name}</h3>
-                <p style={styles.itemInfo}>{item.info}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-      {/* Modal / Popup */}
-    {selectedItem && (
-      <div style={styles.overlay} onClick={() => setSelectedItem(null)}>
-        <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
-          <button style={styles.closeBtn} onClick={() => setSelectedItem(null)}>✕</button>
-          
-          <h2 style={styles.modalTitle}>{selectedItem.name}</h2>
-          <p style={styles.modalInfoText}>{selectedItem.info}</p>
+            ))}
+          </div>
+        </section>
+      ))}
 
-          {selectedItem.stats && (
-            <div style={styles.statsRow}>
-              <Stat label="Kcal" val={selectedItem.stats.kcal} />
-              <Stat label="Protein" val={selectedItem.stats.protein} unit="g" />
-              <Stat label="Fiber" val={selectedItem.stats.fiber} unit="g" />
-              <Stat label="Fat" val={selectedItem.stats.fat} unit="g" />
+      {/* Modal / Popup */}
+      {selectedItem && (
+        <div style={styles.overlay} onClick={() => setSelectedItem(null)}>
+          <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <button style={styles.closeBtn} onClick={() => setSelectedItem(null)}>✕</button>
+            <h2 style={styles.modalTitle}>{selectedItem.name}</h2>
+            {
+              false && selectedItem.stats &&
+              <div style={styles.statsRow}>
+                <Stat label="Kcal" val={selectedItem.stats.kcal} />
+                <Stat label="Protein" val={selectedItem.stats.protein} unit="g" />
+                <Stat label="Fiber" val={selectedItem.stats.fiber} unit="g" />
+                <Stat label="Fat" val={selectedItem.stats.fat} unit="g" />
+              </div>
+            }
+            <div style={styles.modalBody}>
+              <p style={styles.fullInfo}>{selectedItem.info}</p>
+              {
+                selectedItem.portion &&
+                <p style={styles.portionInfo}><strong>Standard Portion:</strong> {selectedItem.portion}</p>
+              }
             </div>
-          )}
+            {
+              selectedItem.ingredients &&
+              <ul style={{ textAlign: "left" }}>
+                <h3 style={styles.modalSubtitle}>Ingredients</h3>
+                {selectedItem.ingredients.split(/\n/).map((line, idx) => (
+                  <li key={idx} style={{ marginBottom: '8px' }}>{line}</li>
+                ))
+                }
+              </ul>
+            }
+            {
+              selectedItem.howTo &&
+              <div>
+                <p style={styles.fullInfo}>{selectedItem.howTo}</p>
+              </div>
+            }
+          </div>
         </div>
-      </div>
-    )}
+      )}
     </div>
   );
 };
@@ -85,7 +126,8 @@ const styles: { [key: string]: React.CSSProperties } = {
     maxWidth: '1200px',
     margin: '0 auto',
     color: theme.colors.textPrimary,
-    fontFamily: theme.typography.fontFamily
+    fontFamily: theme.typography.fontFamily,
+    position: 'relative'
   },
   header: { textAlign: 'center', marginBottom: '40px' },
   title: {
@@ -107,7 +149,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(145px, 1fr))', 
+    gridTemplateColumns: 'repeat(auto-fill, minmax(145px, 1fr))',
     gap: '8px'
   },
   card: {
@@ -130,9 +172,12 @@ const styles: { [key: string]: React.CSSProperties } = {
   img: { width: '100%', height: '100%', objectFit: 'cover' },
   cardContent: { padding: '16px' },
   itemName: {
-    margin: '0 0 8px 0',
-    fontSize: theme.typography.h2.fontSize,
-    fontWeight: theme.typography.h2.fontWeight
+    margin: '0 0 4px 0',
+    fontSize: '0.85rem', // Sänkt fontstorlek för att undvika fula radbrytningar
+    fontWeight: theme.typography.h2.fontWeight,
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis' // Lägger till ... om namnet är för långt
   },
   itemInfo: {
     color: theme.colors.textSecondary,
@@ -184,23 +229,34 @@ const styles: { [key: string]: React.CSSProperties } = {
     marginBottom: '20px',
     color: theme.colors.textPrimary
   },
-  scrollArea: { overflowY: 'auto', marginTop: '0px' },
-  modalInfoText: { fontSize: '0.9rem', lineHeight: '1.5', color: theme.colors.textSecondary },
   statsRow: {
-    display: 'flex', justifyContent: 'space-around',
-    padding: '20px 0', borderBottom: '1px solid #eee'
+    display: 'grid',
+    gridTemplateColumns: 'repeat(4, 1fr)',
+    gap: '10px',
+    marginBottom: '24px'
   },
-  statBox: { textAlign: 'center' },
-  statVal: { fontSize: '1.1rem', fontWeight: 'bold' },
-  statLabel: { fontSize: '0.75rem', color: theme.colors.textSecondary },
-  modalSubtitle: { fontSize: '1.1rem', marginTop: '20px', marginBottom: '10px' },
-  ingredientList: { paddingLeft: '20px', margin: 0, color: theme.colors.textSecondary },
-  listItem: { marginBottom: '5px', fontSize: '0.95rem', textAlign:"left" },
-  howToText: { fontSize: '0.95rem', lineHeight: '1.6', color: theme.colors.textSecondary },
-  rdiGrid: { 
-    display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px',
-    fontSize: '0.85rem', padding: '10px', borderRadius: '8px', color: theme.colors.textSecondary
+  statBox: {
+    background: theme.colors.cardBg,
+    padding: '12px',
+    borderRadius: theme.borderRadius.md,
+    textAlign: 'center',
+    border: `1px solid ${theme.colors.border}`
   },
+  statVal: {
+    fontWeight: 'bold',
+    fontSize: '1.1rem',
+    color: theme.colors.accent
+  },
+  statLabel: {
+    fontSize: '0.7rem',
+    color: theme.colors.textSecondary,
+    textTransform: 'uppercase'
+  },
+  modalBody: {
+    lineHeight: theme.typography.body.lineHeight,
+    color: theme.colors.textPrimary
+  },
+  fullInfo: { marginBottom: '20px' },
   portionInfo: {
     padding: '12px',
     background: 'rgba(59, 130, 246, 0.1)',

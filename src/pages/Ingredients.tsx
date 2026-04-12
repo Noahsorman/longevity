@@ -110,17 +110,6 @@ const IngredientsPage: React.FC = () => {
           </div>
         </div>
       )}
-      <div id="scrollToTopButton" style={{
-        position: "fixed", bottom: "0.8rem", right: ".8rem",
-        padding: ".8rem 1rem",
-        fontSize: "2rem",
-        borderRadius: "100%",
-        backgroundColor: theme.colors.accentLight,
-        color: theme.colors.textPrimary,
-        fontWeight: 900
-      }} onClick={() => document.getElementById("top")?.scrollIntoView({ behavior: 'smooth' })}>
-        ↑
-      </div>
     </div>
   );
 };

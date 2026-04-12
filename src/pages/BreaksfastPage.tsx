@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import BREAKFAST_DATA_IMP from '../assets/data/breakfasts.json';
+import OvernightOatsImage from '../assets/images/OvernightOats.jpg';
 import { theme } from '../assets/themes';
 
 interface Breakfast {
@@ -32,7 +33,6 @@ const BreakfastPage: React.FC = () => {
 
       <div style={styles.verticalList}>
         {WEEKDAYS.map((day, index) => {
-          // Vi roterar frukostarna om listan är kortare än 7 dagar
           const breakfast = breakfasts[
             ([2,4]).includes(index) ? 0 : 
             ([0]).includes(index) ? 1 : 
@@ -54,7 +54,9 @@ const BreakfastPage: React.FC = () => {
               <div style={styles.card}>                
                 <div style={styles.cardContent}>
                   <div style={styles.imagePlaceholder}>
-                    {breakfast.image ? <img src={breakfast.image} alt={breakfast.name} style={styles.img} /> : <span>🥗</span>}
+                    {breakfast.image ? <img src={
+                      breakfast.image === "OvernightOats.jpg" ? OvernightOatsImage : breakfast.image
+                    } alt={breakfast.name} style={styles.img} /> : <span>🥗</span>}
                   </div>
                   <h3 style={styles.itemName}>{breakfast.name}</h3>
                   <p style={styles.itemInfo}>{breakfast.info.substring(0, 80)}...</p>
