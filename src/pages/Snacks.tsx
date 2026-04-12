@@ -74,15 +74,6 @@ const SnacksPage: React.FC = () => {
           <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
             <button style={styles.closeBtn} onClick={() => setSelectedItem(null)}>✕</button>
             <h2 style={styles.modalTitle}>{selectedItem.name}</h2>
-            {
-              false && selectedItem.stats &&
-              <div style={styles.statsRow}>
-                <Stat label="Kcal" val={selectedItem.stats.kcal} />
-                <Stat label="Protein" val={selectedItem.stats.protein} unit="g" />
-                <Stat label="Fiber" val={selectedItem.stats.fiber} unit="g" />
-                <Stat label="Fat" val={selectedItem.stats.fat} unit="g" />
-              </div>
-            }
             <div style={styles.modalBody}>
               <p style={styles.fullInfo}>{selectedItem.info}</p>
               {
@@ -112,13 +103,6 @@ const SnacksPage: React.FC = () => {
     </div>
   );
 };
-
-const Stat = ({ label, val, unit = "" }: any) => (
-  <div style={styles.statBox}>
-    <div style={styles.statVal}>{val}{unit}</div>
-    <div style={styles.statLabel}>{label}</div>
-  </div>
-);
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
