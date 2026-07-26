@@ -8,6 +8,7 @@ interface Ingredient {
   image: string;
   portion?: string | number; // Added portion
   pantry?: boolean; // Indicates if the ingredient is in the pantry
+  factor: number;
   stats?: {
     kcal: number;
     protein: number;
@@ -15,9 +16,7 @@ interface Ingredient {
     fat: number;
     carbs: number;
   }
-  rdi?: {
-    rdi?: Record<string, number | undefined>;
-  }
+  rdi?: Record<string, number | undefined>;
   info?: string;
   ingredients?: string;
   howTo?: string;
@@ -28,6 +27,8 @@ type FoodDatabase = Record<string, Ingredient[]>;
 const IngredientsPage: React.FC = () => {
   const [selectedItem, setSelectedItem] = useState<Ingredient | null>(null);
   const FOOD_DATABASE: FoodDatabase = FOOD_DATABASE_IMP as FoodDatabase;
+
+  const [portionTypeIs100g, setPortionTypeIs100g] = useState<boolean>(false);
 
   return (
     <div style={styles.container} id="top"
@@ -75,14 +76,43 @@ const IngredientsPage: React.FC = () => {
           <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
             <button style={styles.closeBtn} onClick={() => setSelectedItem(null)}>✕</button>
             <h2 style={styles.modalTitle}>{selectedItem.name}</h2>
+            <div style={styles.portionTypeContainer}>
+              <div style={{ ...styles.portionType, ...(portionTypeIs100g ? {} : { background: 'rgba(59, 130, 246, 0.5)', border: `1px solid ${theme.colors.textPrimary}`, color: theme.colors.textPrimary }) }}
+                onClick={() => setPortionTypeIs100g(false)}
+              >per serving</div>
+              <div style={{ ...styles.portionType, ...(!portionTypeIs100g ? {} : { background: 'rgba(59, 130, 246, 0.5)', border: `1px solid ${theme.colors.textPrimary}`, color: theme.colors.textPrimary }) }}
+                onClick={() => setPortionTypeIs100g(true)}
+              >per 100 g</div>
+            </div>
             {
               selectedItem.stats &&
               <div style={styles.statsRow}>
-                <Stat label="Kcal" val={selectedItem.stats.kcal} />
-                <Stat label="Protein" val={selectedItem.stats.protein} unit="g" />
-                <Stat label="Fiber" val={selectedItem.stats.fiber} unit="g" />
-                <Stat label="Fat" val={selectedItem.stats.fat} unit="g" />
+                <Stat label="Kcal" val={portionTypeIs100g ? selectedItem.stats.kcal : Math.round(selectedItem.stats.kcal * selectedItem.factor * 10) / 10} />
+                <Stat label="Protein" val={portionTypeIs100g ? selectedItem.stats.protein : Math.round(selectedItem.stats.protein * selectedItem.factor * 10) / 10} unit="g" />
+                <Stat label="Fiber" val={portionTypeIs100g ? selectedItem.stats.fiber : Math.round(selectedItem.stats.fiber * selectedItem.factor * 10) / 10} unit="g" />
+                <Stat label="Fat" val={portionTypeIs100g ? selectedItem.stats.fat : Math.round(selectedItem.stats.fat * selectedItem.factor * 10) / 10} unit="g" />
               </div>
+            }
+            {
+              selectedItem.rdi &&
+              <>
+              <div style={styles.statsRow}>
+                {selectedItem.rdi && Object.entries(selectedItem.rdi).map(([key, value]) => {
+                  const baseVal = value ?? 0;
+                  const displayVal = portionTypeIs100g
+                    ? baseVal
+                    : Math.round(baseVal * (selectedItem.factor || 1) * 10) / 10;
+
+                  return (
+                    <Stat
+                      key={key}
+                      label={key}
+                      val={`${displayVal}%`}
+                    />
+                  );
+                })}
+              </div>
+              </>
             }
             <div style={styles.modalBody}>
               <p style={styles.fullInfo}>{selectedItem.info}</p>
@@ -265,6 +295,23 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: theme.colors.accentLight,
     fontSize: '0.9rem',
     border: `1px solid rgba(59, 130, 246, 0.2)`
+  },
+  portionType: {
+    padding: '8px 16px',
+    background: 'rgba(59, 130, 246, 0.1)',
+    borderRadius: theme.borderRadius.sm,
+    color: theme.colors.accentLight,
+    fontSize: '0.8rem',
+    border: `1px solid rgba(59, 130, 246, 0.2)`,
+    flex: 1,
+    textAlign: 'center'
+  },
+  portionTypeContainer: {
+    display: 'flex',
+    gap: '12px',
+    marginBottom: '20px',
+    width: '100%',
+    justifyContent: 'center'
   }
 };
 

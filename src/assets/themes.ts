@@ -8,6 +8,18 @@ export const theme = {
     accent: '#3b82f6',         // Klar neon-blå (Longevity-färg)
     accentLight: '#93c5fd',    // Ljusare blå för highlights
     overlay: 'rgba(0, 0, 0, 0.8)',
+    urgency: {
+      recovery: '#64748b',                   // Muted slate/grey for cooldown
+      recoveryBg: 'rgba(100, 116, 139, 0.15)',
+      blue: '#3b82f6',                       // Neon blue for recommended sweet spot
+      blueBg: 'rgba(59, 130, 246, 0.15)',
+      green: '#10b981',
+      greenBg: 'rgba(16, 185, 129, 0.15)',
+      yellow: '#f59e0b',                     // Urgent (Day 5)
+      yellowBg: 'rgba(245, 158, 11, 0.15)',
+      red: '#ef4444',                        // Streak failed (Day 6+)
+      redBg: 'rgba(239, 68, 68, 0.15)',
+    }
   },
   typography: {
     fontFamily: "'Inter', sans-serif", // Standard för modern webb

@@ -1,5 +1,5 @@
 import Navbar from './navigation/navbar'
-import { BreakfastPage, DressingsPage, IngredientsPage, MealGenerator, WorkoutPage } from './pages'
+import { BreakfastPage, DressingsPage, IngredientsPage, MealGenerator, RecipesPage, WorkoutPage, WorkoutTrackerPage } from './pages'
 import { Routes, Route } from 'react-router-dom'
 import SnacksPage from './pages/Snacks';
 
@@ -10,9 +10,11 @@ const navConfig = {
     "Dressings": "/dressings",
     "Breakfasts": "/breakfasts",
     "Snacks": "/snacks",
+    "Recipes": "/recipes"
   },
   "Exercise": {
-    "Workouts": "/workouts"
+    "Workouts": "/workouts",
+    "Tracker": "/workout-tracker"
   },
   "Launchpad": "https://noahsorman.github.io"
 };
@@ -32,6 +34,8 @@ function App() {
           <Route path="/breakfasts" element={<BreakfastPage />} />
           <Route path="/workouts" element={<WorkoutPage />} />
           <Route path="/snacks" element={<SnacksPage />} />
+          <Route path="/recipes" element={<RecipesPage />} />
+          <Route path="/workout-tracker" element={<WorkoutTrackerPage />} />
           
           {/* Fallback - redirects unknown paths back to Home */}
           <Route path="*" element={<MealGenerator />} />

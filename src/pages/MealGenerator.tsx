@@ -8,17 +8,19 @@ interface Ingredient {
   image: string;
   portion?: string | number; // Added portion
   pantry?: boolean; // Indicates if the ingredient is in the pantry
+  factor: number;
   stats?: {
-    kcal?: number;
-    protein?: number;
-    fiber?: number;
-    fat?: number;
-    carbs?: number;
+    kcal: number;
+    protein: number;
+    fiber: number;
+    fat: number;
+    carbs: number;
   }
   rdi?: Record<string, number | undefined>;
   info?: string;
   ingredients?: string;
   howTo?: string;
+
 }
 
 interface SelectedItem extends Ingredient {
@@ -63,6 +65,7 @@ const MealRandomizer: React.FC = () => {
       : []
   );
   const [selectedItem, setSelectedItem] = useState<SelectedItem | null>(null);
+  const [portionTypeIs100g, setPortionTypeIs100g] = useState<boolean>(false);
 
   const generateMeals = () => {
     if (localStorage.getItem('longevity-weeklyMeals')) {
@@ -167,28 +170,59 @@ const MealRandomizer: React.FC = () => {
 
         {meals.length > 0 && (
           <>
-            <div style={styles.mealGrid}>
-              {meals.map((meal, idx) => (
-                <div key={idx} style={styles.mealCard}>
-                  <h2 style={styles.mealTitle}>Box #{idx + 1}</h2>
-                  <div style={styles.ingredientList}>
-                    {meal.map((item) => (
-                      <div key={item.category} style={styles.ingredientRow}
-                        onClick={_ => setSelectedItem(item)}
-                      >
-                        <img src={item.image} alt={item.name} style={styles.img} />
-                        <div>
-                          {/* <div style={styles.categoryLabel}>{item.category}</div> */}
-                          <div style={styles.itemName}>{item.name}</div>
-                          {item.portion && <div style={styles.portionLabel}>{item.portion}</div>}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
+            <div style={
+              {
+                display: 'flex',
+                // Här har vi tillgång till meals.length
+                // gridTemplateColumns: `repeat(${meals.length}, minmax(400px, 90vw))`,
+                gap: '24px',
+                marginBottom: '48px',
+                paddingBottom: '16px',
+                width: '100%',
+                overflowX: "auto",
+                scrollbarWidth: 'thin',
+                scrollbarColor: `${theme.colors.accent} transparent`,                
+                scrollSnapType: 'x mandatory',
+              }
+            }>
+              {meals.map((meal, idx) => {
+                const totals = calculateMealTotals(meal); // Beräkna totalen för denna box
 
+                return (
+                  <div key={idx} style={styles.mealCard}>
+                    <h2 style={styles.mealTitle}>Box #{idx + 1}</h2>
+
+                    <div style={styles.ingredientList}>
+                      {meal.map((item) => (
+                        <div key={item.category} style={styles.ingredientRow} onClick={() => setSelectedItem(item)}>
+                          <img src={item.image} alt={item.name} style={styles.img} />
+                          <div>
+                            <div style={styles.itemName}>{item.name}</div>
+                            {item.portion && <div style={styles.portionLabel}>{item.portion}</div>}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div style={styles.mealSummary}>
+                      <div style={styles.statsRow}>
+                        <Stat label="Kcal" val={Math.round(totals?.stats?.kcal ?? 0)} />
+                        <Stat label="Protein" val={Math.round(totals?.stats?.protein ?? 0)} unit="g" />
+                        <Stat label="Fiber" val={Math.round(totals?.stats?.fiber ?? 0)} unit="g" />
+                        <Stat label="Carbs" val={Math.round(totals?.stats?.carbs ?? 0)} unit="g" />
+                      </div>
+                      <hr style={{ borderColor: theme.colors.border, margin: '12px 0' }} />
+
+                      <div style={styles.statsRow}>
+                        {Object.entries(totals?.rdi || {}).map(([key, val]) => (
+                          <Stat key={key} style={styles.rdiTag} label={key} val={Math.round(val ?? 0)} unit="%" />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
             <section style={styles.shoppingSection}>
               <h2 style={styles.shoppingTitle}>🛒 Shopping List</h2>
               <div style={{ position: "absolute", top: "1rem", right: "2rem" }}
@@ -227,27 +261,22 @@ const MealRandomizer: React.FC = () => {
           <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
             <button style={styles.closeBtn} onClick={() => setSelectedItem(null)}>✕</button>
             <h2 style={styles.modalTitle}>{selectedItem.name}</h2>
+            <div style={styles.portionTypeContainer}>
+              <div style={{ ...styles.portionType, ...(portionTypeIs100g ? {} : { background: 'rgba(59, 130, 246, 0.5)', border: `1px solid ${theme.colors.textPrimary}`, color: theme.colors.textPrimary }) }}
+                onClick={() => setPortionTypeIs100g(false)}
+              >per serving</div>
+              <div style={{ ...styles.portionType, ...(!portionTypeIs100g ? {} : { background: 'rgba(59, 130, 246, 0.5)', border: `1px solid ${theme.colors.textPrimary}`, color: theme.colors.textPrimary }) }}
+                onClick={() => setPortionTypeIs100g(true)}
+              >per 100 g</div>
+            </div>
             {
               selectedItem.stats &&
               <div style={styles.statsRow}>
-                <Stat label="Kcal" val={selectedItem.stats.kcal} />
-                <Stat label="Protein" val={selectedItem.stats.protein} unit="g" />
-                <Stat label="Fiber" val={selectedItem.stats.fiber} unit="g" />
-                <Stat label="Fat" val={selectedItem.stats.fat} unit="g" />
+                <Stat label="Kcal" val={portionTypeIs100g ? selectedItem.stats.kcal : Math.round(selectedItem.stats.kcal * selectedItem.factor * 10) / 10} />
+                <Stat label="Protein" val={portionTypeIs100g ? selectedItem.stats.protein : Math.round(selectedItem.stats.protein * selectedItem.factor * 10) / 10} unit="g" />
+                <Stat label="Fiber" val={portionTypeIs100g ? selectedItem.stats.fiber : Math.round(selectedItem.stats.fiber * selectedItem.factor * 10) / 10} unit="g" />
+                <Stat label="Fat" val={portionTypeIs100g ? selectedItem.stats.fat : Math.round(selectedItem.stats.fat * selectedItem.factor * 10) / 10} unit="g" />
               </div>
-            }
-            {
-              selectedItem.rdi &&
-              <>
-                <div style={styles.rdiText}><strong>RDI</strong></div>
-                <div style={styles.statsRow}>
-                  {
-                    Object.keys(selectedItem.rdi).map(key => (
-                      <Stat key={key} label={key} val={selectedItem.rdi ? selectedItem.rdi[key] : 0} unit="%" />
-                    ))
-                  }
-                </div>
-              </>
             }
             <div style={styles.modalBody}>
               <p style={styles.fullInfo}>{selectedItem.info}</p>
@@ -256,6 +285,22 @@ const MealRandomizer: React.FC = () => {
                 <p style={styles.portionInfo}><strong>Standard Portion:</strong> {selectedItem.portion}</p>
               }
             </div>
+            {
+              selectedItem.ingredients &&
+              <ul style={{ textAlign: "left" }}>
+                <h3 style={styles.modalSubtitle}>Ingredients</h3>
+                {selectedItem.ingredients.split(/\n/).map((line, idx) => (
+                  <li key={idx} style={{ marginBottom: '8px' }}>{line}</li>
+                ))
+                }
+              </ul>
+            }
+            {
+              selectedItem.howTo &&
+              <div>
+                <p style={styles.fullInfo}>{selectedItem.howTo}</p>
+              </div>
+            }
           </div>
         </div>
       )}
@@ -269,6 +314,33 @@ const Stat = ({ label, val, unit = "" }: any) => (
     <div style={styles.statLabel}>{label}</div>
   </div>
 );
+
+const calculateMealTotals = (meal: SelectedItem[]) => {
+  const totals: Pick<SelectedItem, 'stats' | 'rdi'> = {
+    stats: { kcal: 0, protein: 0, fiber: 0, fat: 0, carbs: 0 },
+    rdi: {}
+  };
+
+  meal.forEach(item => {
+    const f = item.factor || 1;
+
+    if (item.stats) {
+      (Object.keys(totals.stats ?? {}) as Array<keyof typeof totals.stats>).forEach((key) => {
+        const value = item.stats?.[key] || 0;
+        (totals.stats as any)[key] += value * f;
+      });
+    }
+
+    if (item.rdi) {
+      Object.entries(item.rdi).forEach(([key, value]) => {
+        if (!totals.rdi) return;
+        totals.rdi[key] = (totals.rdi[key] || 0) + ((value ?? 0) * f);
+      });
+    }
+  });
+
+  return totals;
+};
 
 const styles: Record<string, React.CSSProperties> = {
   page: {
@@ -305,18 +377,14 @@ const styles: Record<string, React.CSSProperties> = {
     boxShadow: `0 4px 14px 0 rgba(59, 130, 246, 0.39)`, // Matchar accent
     transition: 'all 0.2s ease'
   },
-  mealGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-    gap: '24px',
-    marginBottom: '48px'
-  },
   mealCard: {
+    flex: '0 0 85%',
+    scrollSnapAlign: "start",
     backgroundColor: theme.colors.cardBg,
     borderRadius: theme.borderRadius.xl,
     padding: '24px',
     border: `1px solid ${theme.colors.border}`,
-    boxShadow: theme.shadows.card
+    boxShadow: theme.shadows.card,
   },
   mealTitle: {
     fontSize: '1.25rem',
@@ -356,13 +424,15 @@ const styles: Record<string, React.CSSProperties> = {
   itemName: {
     fontSize: theme.typography.body.fontSize,
     fontWeight: 600,
-    color: theme.colors.textPrimary
+    color: theme.colors.textPrimary,
+    textAlign: "left"
   },
   portionLabel: {
     fontSize: '0.8rem',
     color: theme.colors.textSecondary,
     fontStyle: 'italic',
-    marginTop: '2px'
+    marginTop: '2px',
+    textAlign: "left"
   },
   shoppingSection: {
     backgroundColor: theme.colors.cardBg,
@@ -450,16 +520,17 @@ const styles: Record<string, React.CSSProperties> = {
   },
   statsRow: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(4, 1fr)',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(80px, 1fr))',
     gap: '10px',
-    marginBottom: '24px'
+    marginBottom: '12px'
   },
   statBox: {
     background: theme.colors.cardBg,
     padding: '12px',
     borderRadius: theme.borderRadius.md,
     textAlign: 'center',
-    border: `1px solid ${theme.colors.border}`
+    border: `1px solid ${theme.colors.border}`,
+    wordBreak: 'break-word'
   },
   statVal: {
     fontWeight: 'bold',
@@ -492,6 +563,48 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '0.7rem',
     fontStyle: 'italic',
     borderTop: `1px solid rgba(59, 130, 246, 0.2)`
+  },
+  portionType: {
+    padding: '8px 16px',
+    background: 'rgba(59, 130, 246, 0.1)',
+    borderRadius: theme.borderRadius.sm,
+    color: theme.colors.accentLight,
+    fontSize: '0.8rem',
+    border: `1px solid rgba(59, 130, 246, 0.2)`,
+    flex: 1,
+    textAlign: 'center'
+  },
+  portionTypeContainer: {
+    display: 'flex',
+    gap: '12px',
+    marginBottom: '20px',
+    width: '100%',
+    justifyContent: 'center'
+  },
+  mealSummary: {
+    marginTop: '1rem',
+    paddingTop: '1rem',
+    borderTop: '1px solid #eee',
+    fontSize: '0.85rem',
+  },
+  summaryStats: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginBottom: '0.5rem',
+    color: '#333',
+  },
+  summaryRdiGrid: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '4px',
+  },
+  rdiTag: {
+    backgroundColor: '#f0f7f0',
+    color: '#2e7d32',
+    padding: '2px 6px',
+    borderRadius: '4px',
+    fontSize: '0.75rem',
+    fontWeight: '600',
   }
 };
 
