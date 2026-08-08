@@ -15,7 +15,9 @@ interface Recipe {
   prepTime?: string;
   servings: number;
   kcal?: number;
-  ingredients: { name: string; amount: number; unit: string, title?:string }[];
+  protein?: number;
+  vitamins?: Record<string, number>
+  ingredients: { name: string; amount: number; unit: string, title?: string }[];
   instructions: string[];
 }
 
@@ -66,6 +68,13 @@ export const RecipesPage: React.FC = () => {
   const hasActiveFilters =
     selectedProteins.length > 0 ||
     selectedDishTypes.length > 0;
+
+  const Stat = ({ label, val, unit = "" }: any) => (
+    <div style={styles.statBox}>
+      <div style={styles.statVal}>{val}{unit}</div>
+      <div style={styles.statLabel}>{label}</div>
+    </div>
+  );
 
   return (
     <div style={styles.container}>
@@ -196,7 +205,7 @@ export const RecipesPage: React.FC = () => {
             </button>
 
             <div style={styles.modalHero}>
-              <img src={selectedRecipe.image} alt={selectedRecipe.title} style={styles.modalImage} />
+              <img src={(/^(http|data:)/g).test(selectedRecipe.image) ? selectedRecipe.image : `src/assets/images/${selectedRecipe.image}`} alt={selectedRecipe.title} style={styles.modalImage} />
             </div>
 
             <div style={styles.modalBody}>
@@ -213,9 +222,20 @@ export const RecipesPage: React.FC = () => {
               <div style={styles.modalMetaRow}>
                 {selectedRecipe.prepTime && <div><strong>Prep:</strong> {selectedRecipe.prepTime}</div>}
                 {selectedRecipe.kcal && <div><strong>Energy:</strong> {selectedRecipe.kcal} kcal</div>}
+                {selectedRecipe.protein && <div><strong>Protein:</strong> {selectedRecipe.protein}</div>}
                 {selectedRecipe.servings && <div><strong>Servings:</strong> {selectedRecipe.servings}</div>}
               </div>
-
+              {selectedRecipe.vitamins && (
+                <div style={styles.statsRow}>
+                  {Object.entries(selectedRecipe.vitamins).map(([vitamin, rdu]) => (
+                    <Stat
+                      key={vitamin}
+                      label={vitamin}
+                      val={`${rdu}%`}
+                    />
+                  ))}
+                </div>
+              )}
               <hr style={styles.divider} />
 
               {/* Ingredients */}
@@ -223,7 +243,7 @@ export const RecipesPage: React.FC = () => {
                 <h3 style={styles.sectionTitle}>Ingredients</h3>
                 <ul style={styles.ingredientList}>
                   {selectedRecipe.ingredients.map((ing, idx) => {
-                    if(ing.title) return <h2>{ing.title}</h2>
+                    if (ing.title) return <h2>{ing.title}</h2>
                     return <li key={idx} style={styles.ingredientItem}>
                       <span style={styles.bullet}>•</span> {ing.amount} {ing.unit} {ing.name}
                     </li>
@@ -573,5 +593,28 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontSize: '0.8rem',
     fontWeight: 700,
     flexShrink: 0,
+  },
+  statsRow: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(4, 1fr)',
+    gap: '10px',
+    marginBottom: '24px'
+  },
+  statBox: {
+    background: theme.colors.cardBg,
+    padding: '12px',
+    borderRadius: theme.borderRadius.md,
+    textAlign: 'center',
+    border: `1px solid ${theme.colors.border}`
+  },
+  statVal: {
+    fontWeight: 'bold',
+    fontSize: '1.1rem',
+    color: theme.colors.accent
+  },
+  statLabel: {
+    fontSize: '0.7rem',
+    color: theme.colors.textSecondary,
+    textTransform: 'uppercase'
   },
 };
