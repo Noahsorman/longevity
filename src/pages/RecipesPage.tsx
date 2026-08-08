@@ -3,14 +3,14 @@ import { theme } from '../assets/themes';
 import rawRecipes from '../assets/data/recipes.json';
 
 // --- Types & Interfaces ---
-type ProteinType = 'Chicken' | 'Fish' | 'Beef' | 'Vegetarian';
+type ProteinSourceType = 'Chicken' | 'Fish' | 'Beef' | 'Vegetarian';
 type DishType = 'Batch' | 'Main' | 'Breakfast' | 'Snack' | 'Soup' | 'One-plate oven';
 
 interface Recipe {
   id: string;
   title: string;
   image: string;
-  protein?: ProteinType;
+  proteinSource?: ProteinSourceType;
   dishType?: DishType[];
   prepTime?: string;
   servings: number;
@@ -23,7 +23,7 @@ const recipes = rawRecipes as unknown as Recipe[];
 
 export const RecipesPage: React.FC = () => {
   // --- Filter State ---
-  const [selectedProteins, setSelectedProteins] = useState<ProteinType[]>([]);
+  const [selectedProteins, setSelectedProteins] = useState<ProteinSourceType[]>([]);
   const [selectedDishTypes, setSelectedDishTypes] = useState<DishType[]>([]);
 
   // --- Selected Recipe Modal State ---
@@ -53,7 +53,7 @@ export const RecipesPage: React.FC = () => {
   const filteredRecipes = useMemo(() => {
     return recipes.filter((recipe) => {
       const matchesProtein =
-        selectedProteins.length === 0 || (recipe.protein && selectedProteins.includes(recipe.protein));
+        selectedProteins.length === 0 || (recipe.proteinSource && selectedProteins.includes(recipe.proteinSource));
 
       const matchesDishType =
         selectedDishTypes.length === 0 ||
@@ -84,7 +84,7 @@ export const RecipesPage: React.FC = () => {
         <div style={styles.filterGroup}>
           <h3 style={styles.filterGroupTitle}>Diet & Protein</h3>
           <div style={styles.checkboxList}>
-            {(['Chicken', 'Fish', 'Beef', 'Vegetarian'] as ProteinType[]).map((protein) => (
+            {(['Chicken', 'Fish', 'Beef', 'Vegetarian'] as ProteinSourceType[]).map((protein) => (
               <label key={protein} style={styles.checkboxLabel}>
                 <input
                   type="checkbox"
@@ -156,8 +156,8 @@ export const RecipesPage: React.FC = () => {
               <div style={styles.cardContent}>
                 <h2 style={styles.cardTitle}>{recipe.title}</h2>
                 <div style={styles.tagGroup}>
-                  {recipe.protein &&
-                    <span style={styles.tag}>{recipe.protein}</span>
+                  {recipe.proteinSource &&
+                    <span style={styles.tag}>{recipe.proteinSource}</span>
                   }
                   {recipe.dishType &&
                     recipe.dishType.map(d => (
@@ -203,8 +203,8 @@ export const RecipesPage: React.FC = () => {
               <h2 style={styles.modalTitle}>{selectedRecipe.title}</h2>
 
               <div style={styles.tagGroup}>
-                {selectedRecipe.protein &&
-                  <span style={styles.tag}>{selectedRecipe.protein}</span>
+                {selectedRecipe.proteinSource &&
+                  <span style={styles.tag}>{selectedRecipe.proteinSource}</span>
                 }
 
                 {selectedRecipe.dishType && <span style={styles.tag}>{selectedRecipe.dishType}</span>}

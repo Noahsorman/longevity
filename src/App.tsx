@@ -5,7 +5,7 @@ import SnacksPage from './pages/Snacks';
 
 const navConfig = {
   "Food": {
-    "Week Planner": "/",
+    "Week Planner": "/meal-generator",
     "Ingredients": "/ingredients",
     "Dressings": "/dressings",
     "Breakfasts": "/breakfasts",
@@ -26,9 +26,10 @@ function App() {
       <main style={{ padding: '0px' }}>
         <Routes>
           {/* This matches the root "/" and shows your MealGenerator */}
-          <Route path="/" element={<MealGenerator />} />
+          <Route path="/" element={<WorkoutTrackerPage />} />
           
           {/* You can add more pages here later */}
+          <Route path="/meal-generator" element={<MealGenerator />} />
           <Route path="/ingredients" element={<IngredientsPage />} />
           <Route path="/dressings" element={<DressingsPage />} />
           <Route path="/breakfasts" element={<BreakfastPage />} />

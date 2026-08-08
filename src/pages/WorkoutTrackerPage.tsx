@@ -142,7 +142,7 @@ export default function WorkoutTracker() {
         : null;
 
       // 1. Determine Status based on days elapsed
-      let urgency: 'recovery' | 'blue' | 'yellow' | 'red' = 'blue';
+      let urgency: 'recovery' | 'blue' | 'yellow' | 'red' = 'red';
 
       if (daysAgo !== null && group === "Stretch") {
         if (daysAgo <= 0) urgency = 'recovery';      // Day 0–2: Cooldown

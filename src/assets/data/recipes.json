@@ -2,7 +2,7 @@
   {
     "title": "Stor Kyckling- & Sötpotatisplåt med Jordnötssås",
     "image": "https://www.eatingwell.com/thmb/lpcs5PVRkxzny-oandlZYTe7vJ0=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/roast-chicken-sweet-potatoes-250549-1x1-bab6fea85bda439fa5f0ad5fd07e29d8.jpg",
-    "protein": "Chicken",
+    "proteinSource": "Chicken",
     "servings": 9,
     "prepTime": 20,
     "cookTime": 30,
@@ -102,7 +102,7 @@
     "servings": 9,
     "prepTime": 25,
     "cookTime": 35,
-    "protein": "Beef",
+    "proteinSource": "Beef",
     "dishType": [
       "Batch"
     ],
@@ -192,7 +192,7 @@
   {
     "title": "Lax- & Grönsakscurry med Kokosmjölk",
     "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxvaSr7EBFMwI8dByyb6sN-55vfDX9gmmel7Zeb8UA9Q&s=10",
-    "protein": "Fish",
+    "proteinSource": "Fish",
     "servings": 8,
     "prepTime": 20,
     "cookTime": 20,
@@ -296,11 +296,26 @@
     "title": "Nutty Pudding",
     "image": "data:image/jpeg;base64,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",
     "servings": 2,
-    "prepTime": 10,
+    "prepTime": 15,
     "cookTime": 0,
     "dishType": [
       "Breakfast"
     ],
+    "kcal": 685,
+    "protein": 44,
+    "fat": 32,
+    "vitamins": {
+      "Mangan": 125,
+      "Fosfor": 95,
+      "Magnesium": 55,
+      "Kalcium": 45,
+      "Vitamin B12": 25,
+      "Zink": 35,
+      "Riboflavin (B2)": 30,
+      "Vitamin E": 25,
+      "Järn": 25,
+      "Vitamin C": 10
+    },
     "description": "Denna 'all-in-one' frukost är designad för cellulär föryngring. Granatäpplejuice innehåller punicalaginer som via tarmfloran skapar Urolitin A – en molekyl som städar bort gamla mitokondrier. Ceylonkanel fungerar som en insulin-sensitizer, vilket gör att ditt blodsocker förblir stabilt trots bären och juicen. Chiafrön och linfrön levererar massiva mängder ALA (Omega-3).",
     "ingredients": [
       {
@@ -312,7 +327,7 @@
         "unit": "st"
       },
       {
-        "name": "Walnötter",
+        "name": "Valnötter",
         "amount": 6,
         "unit": "st"
       },
@@ -332,22 +347,17 @@
         "unit": "dl"
       },
       {
-        "name": "Körsbär",
-        "amount": 6,
-        "unit": "dl"
-      },
-      {
-        "name": "Körsbär",
+        "name": "Granatäpplejuice / Körsbärsjuice",
         "amount": 120,
         "unit": "ml"
       },
       {
-        "name": "Mjök",
+        "name": "Mjölk",
         "amount": 100,
         "unit": "ml"
       },
       {
-        "name": "Keylon kanel",
+        "name": "Ceylonkanel",
         "amount": 1,
         "unit": "tsk"
       },
@@ -357,7 +367,7 @@
       {
         "name": "Naturellt proteinpulver",
         "amount": 2,
-        "unit": "Skopor"
+        "unit": "skopor"
       },
       {
         "name": "Chiafrön",
@@ -380,86 +390,152 @@
   {
     "title": "Overnight oats Blueberry chocolate",
     "image": "OvernightOats.jpg",
-    "servings": 2,
+    "servings": 1,
     "prepTime": 5,
     "cookTime": 0,
+    "kcal": 690,
+    "protein": 45,
+    "fat": 33,
+    "vitamins": {
+      "Mangan": 130,
+      "Fosfor": 100,
+      "Magnesium": 55,
+      "Kalcium": 50,
+      "Vitamin B12": 50,
+      "Zink": 40,
+      "Riboflavin (B2)": 30,
+      "Vitamin E": 30,
+      "Järn": 25,
+      "Vitamin C": 10
+    },
     "dishType": [
       "Breakfast"
     ],
     "description": "En fiberrik frukost optimerad för långvarig mättnad och stabilt blodsocker. Björnbärens antocyaniner och kanelens blodsockerreglerande egenskaper gör detta till en metabolisk supermåltid.",
     "ingredients": [
       {
-        "title": "Bas att mixa:"
+        "title": "Basingredienser:"
       },
       {
-        "name": "Paranötter",
-        "amount": 2,
-        "unit": "st"
-      },
-      {
-        "name": "Walnötter",
-        "amount": 6,
-        "unit": "st"
-      },
-      {
-        "name": "Solroskärnor",
-        "amount": 4,
-        "unit": "msk"
-      },
-      {
-        "name": "Linfrön",
-        "amount": 2,
-        "unit": "msk"
-      },
-      {
-        "name": "Blåbär",
-        "amount": 1,
+        "name": "Fiberhavregryn",
+        "amount": 1.5,
         "unit": "dl"
       },
       {
-        "name": "Körsbär",
-        "amount": 6,
+        "name": "Proteinpulver",
+        "amount": 0.6,
         "unit": "dl"
       },
       {
-        "name": "Körsbär",
-        "amount": 120,
-        "unit": "ml"
-      },
-      {
-        "name": "Mjök",
-        "amount": 100,
-        "unit": "ml"
-      },
-      {
-        "name": "Keylon kanel",
+        "name": "Ceylonkanel",
         "amount": 1,
         "unit": "tsk"
+      },
+      {
+        "name": "Linfrön (Krossade)",
+        "amount": 1,
+        "unit": "msk"
+      },
+      {
+        "name": "Mjölk (Standard)",
+        "amount": 1.5,
+        "unit": "dl"
       },
       {
         "title": "Att toppa med:"
       },
       {
-        "name": "Naturellt proteinpulver",
-        "amount": 2,
-        "unit": "Skopor"
-      },
-      {
-        "name": "Chiafrön",
+        "name": "Jordnötssmör",
         "amount": 2,
         "unit": "msk"
       },
       {
-        "name": "Blåbär",
+        "name": "Blåbär/Björnbär",
         "amount": 1,
         "unit": "dl"
       }
     ],
     "instructions": [
-      "Lägg alla 'bas-ingredienser' i mixern och kör tills det är en helt slät nöt- och bärmjölk.",
-      "Häll upp i en burk.",
-      "Tillsätt proteinpulvret, chiafröna och de sista bären. Rör om försiktigt med en sked (eller låt ligga på toppen till servering).",
-      "Låt stå minst 30 min (eller över natten) så att chiafröna och pulvret suger upp vätskan och skapar den rätta pudding-konsistensen."
+      "Blanda havre, proteinpulver, kanel och linfrön i burken.",
+      "Tillsätt mjölk och skaka eller rör om ordentligt.",
+      "Toppa med jordnötssmör och bär och låt stå i kylen över natten.",
+      "Det är inne i linfröet som den livsviktiga Omega-3-fettsyran finns. För att kroppen ska kunna komma åt den måste skalet vara trasigt (krossat eller malt)."
+    ]
+  },
+  {
+    "title": "Chiapudding",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjffwmm5B_HF6nuDKcP5E7ePR5CTmmfUb0PPyQ7qub4g&s=10",
+    "servings": 1,
+    "prepTime": 5,
+    "cookTime": 10,
+    "kcal": 700,
+    "protein": 43,
+    "fat": 42,
+    "vitamins": {
+      "Fosfor": "135%",
+      "Kalcium": "85%",
+      "Mangan": "80%",
+      "Magnesium": "75%",
+      "Vitamin B12": "50%",
+      "Riboflavin (B2)": "40%",
+      "Zink": "40%",
+      "Järn": "35%",
+      "Vitamin E": "25%",
+      "Vitamin C": "20%"
+    },
+    "dishType": [
+      "Breakfast"
+    ],
+    "description": "En fiberrik frukost optimerad för långvarig mättnad och stabilt blodsocker. Björnbärens antocyaniner och kanelens blodsockerreglerande egenskaper gör detta till en metabolisk supermåltid.",
+    "ingredients": [
+      {
+        "title": "Basingredienser:"
+      },
+      {
+        "name": "Chiafrön",
+        "amount": 4,
+        "unit": "msk"
+      },
+      {
+        "name": "Mjölk",
+        "amount": 2,
+        "unit": "dl"
+      },
+      {
+        "name": "Proteinpulver",
+        "amount": 0.6,
+        "unit": "dl"
+      },
+      {
+        "title": "Att toppa med:"
+      },
+      {
+        "name": "Mango",
+        "amount": 0.5,
+        "unit": "dl"
+      },
+      {
+        "name": "Mandlar",
+        "amount": 6,
+        "unit": "st"
+      },
+      {
+        "name": "Valnötter",
+        "amount": 4,
+        "unit": "st"
+      },
+      {
+        "name": "Jordnötssmör",
+        "amount": 1.5,
+        "unit": "msk"
+      }
+    ],
+    "instructions": [
+      "Shakea mjölk, proteinpulver och jordnötssmör i en shaker",
+      "Häll över chiafrön i en skål",
+      "Rör runt med en pinne",
+      "Låt stå i 10 minuter",
+      "Rör om med pinne och lägg i kylskåpet över natten."
     ]
   },
   {
@@ -580,6 +656,21 @@
     "dishType": [
       "Snack"
     ],
+    "kcal": 99,
+    "protein": 8.6,
+    "fat": 6.9,
+    "vitamins": {
+      "Vitamin B12": 13,
+      "Fosfor": 12,
+      "Riboflavin (B2)": 9,
+      "Kalcium": 9,
+      "Zink": 6,
+      "Järn": 3,
+      "Magnesium": 2,
+      "Mangan": 1,
+      "Vitamin E": 2,
+      "Vitamin C": 0
+    },
     "description": "Supergoda, proteinrika äggmuffins som är perfekta att ha i frysen och plocka fram under stressiga morgnar.",
     "ingredients": [
       {
